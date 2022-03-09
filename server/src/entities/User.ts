@@ -24,10 +24,10 @@ export class User extends BaseEntity {
   @Column()
   password!: string;
 
+  @Field()
   @Column()
   isAdmin!: boolean;
 
-  @Field()
   @OneToMany(() => FoodEntry, (entry) => entry.creator)
   entries: FoodEntry[];
 

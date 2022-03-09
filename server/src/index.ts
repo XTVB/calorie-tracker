@@ -13,24 +13,28 @@ import cors from "cors";
 import { createConnection } from "typeorm";
 import { FoodEntry } from "./entities/FoodEntry";
 import { User } from "./entities/User";
-import path from "path";
 import { createUserLoader } from "./utils/createUserLoader";
+// import path from "path";
 
 const main = async () => {
-  const conn = await createConnection({
+  //const conn = 
+  await createConnection({
     type: "postgres",
-    url: process.env.DATABASE_URL,
-    logging: true,
+    database: "caloriesapp",
+    username: "postgres",
+    password: "postgres",
+    logging: !__prod__,
     synchronize: true,
-    migrations: [path.join(__dirname, "./migrations/*")],
     entities: [User, FoodEntry],
+    // migrations: [path.join(__dirname, "./migrations/*")],
   });
+
+  // await conn.runMigrations();
 
   const app = express();
 
   const RedisStore = connectRedis(session);
-  const redis = new Redis(process.env.REDIS_URL);
-  app.set("trust proxy", 1);
+  const redis = new Redis();
   app.use(
     cors({
       origin: process.env.CORS_ORIGIN,

@@ -1,4 +1,4 @@
-import { ObjectType, Field } from "type-graphql";
+import { ObjectType, Field, Float } from "type-graphql";
 import {
   Entity,
   Column,
@@ -26,28 +26,26 @@ export class FoodEntry extends BaseEntity {
   calories!: number;
 
   @Field()
-  @Column({ type: 'timestamptz' })
+  @Column({ type: "timestamptz" })
   date!: Date;
 
-  @Field()
-  @Column()
-  price: number;
+  @Field(() => Float, { nullable: true })
+  @Column({ nullable: true })
+  price?: number;
 
   @Field()
   @Column()
   creatorId: number;
 
-  @Field()
+  @Field(() => User)
   @ManyToOne(() => User, (user) => user.entries, {
     onDelete: "CASCADE",
   })
   creator: User;
 
-  @Field(() => String)
   @CreateDateColumn()
   createdAt: Date;
 
-  @Field(() => String)
   @UpdateDateColumn()
   updatedAt: Date;
 }

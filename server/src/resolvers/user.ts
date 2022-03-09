@@ -7,12 +7,14 @@ import {
   ObjectType,
   Query,
   InputType,
+  UseMiddleware,
 } from "type-graphql";
 import { MyContext } from "../types";
 import { User } from "../entities/User";
 import argon2 from "argon2";
 import { COOKIE_NAME } from "../constants";
-import { getConnection } from "typeorm";
+import { isAdmin } from "../middleware/authMiddleware";
+import { Not } from "typeorm";
 
 @InputType()
 export class UsernamePasswordInput {
@@ -20,6 +22,8 @@ export class UsernamePasswordInput {
   username: string;
   @Field()
   password: string;
+  @Field()
+  isAdmin: boolean;
 }
 
 @ObjectType()
@@ -41,60 +45,29 @@ class UserResponse {
 
 @Resolver(User)
 export class UserResolver {
-
   @Query(() => User, { nullable: true })
   me(@Ctx() { req }: MyContext) {
-    // TODO not logged in
     // you are not logged in
-    // if (!req.session.userId) {
-    //   return null;
-    // }
-
-    // TODO userID
-    return User.findOne(0);
-  }
-
-  @Mutation(() => UserResponse)
-  async register(
-    @Arg("options") options: UsernamePasswordInput,
-    @Ctx() { req }: MyContext
-  ): Promise<UserResponse> {
-    const hashedPassword = await argon2.hash(options.password);
-    let user;
-    try {
-      // User.create({}).save()
-      const result = await getConnection()
-        .createQueryBuilder()
-        .insert()
-        .into(User)
-        .values({
-          username: options.username,
-          password: hashedPassword,
-        })
-        .returning("*")
-        .execute();
-      user = result.raw[0];
-    } catch (err) {
-      //|| err.detail.includes("already exists")) {
-      // duplicate username error
-      if (err.code === "23505") {
-        return {
-          errors: [
-            {
-              field: "username",
-              message: "username already taken",
-            },
-          ],
-        };
-      }
+    if (!req.session.userId) {
+      return null;
     }
 
-    // store user id session
-    // this will set a cookie on the user
-    // keep them logged in
-    req.session.userId = user.id;
+    return User.findOne(req.session.userId);
+  }
 
-    return { user };
+  // TODO temporary just to set stuff up
+  @Mutation(() => User)
+  async register(
+    @Arg("options") options: UsernamePasswordInput
+  ): Promise<User> {
+    const { username, isAdmin } = options;
+    const hashedPassword = await argon2.hash(options.password);
+
+    return User.create({
+      username,
+      isAdmin,
+      password: hashedPassword,
+    }).save();
   }
 
   @Mutation(() => UserResponse)
@@ -103,9 +76,7 @@ export class UserResolver {
     @Arg("password") password: string,
     @Ctx() { req }: MyContext
   ): Promise<UserResponse> {
-    const user = await User.findOne(
-      { where: { username } }
-    );
+    const user = await User.findOne({ where: { username } });
     if (!user) {
       return {
         errors: [
@@ -149,5 +120,11 @@ export class UserResolver {
         resolve(true);
       })
     );
+  }
+
+  @Query(() => [User])
+  @UseMiddleware(isAdmin)
+  getAllNormalUsers() {
+    return User.find({ isAdmin: Not(true) });
   }
 }
