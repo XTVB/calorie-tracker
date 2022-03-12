@@ -9,6 +9,7 @@ export const createUserLoader = () =>
       userIdToUser[u.id] = u;
     });
 
+    // return the map in the same order the ids came in
     const sortedUsers = userIds.map((userId) => userIdToUser[userId]);
     return sortedUsers;
   });

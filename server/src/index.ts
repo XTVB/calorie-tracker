@@ -1,23 +1,15 @@
 import "reflect-metadata";
 import "dotenv-safe/config";
-import { __prod__, COOKIE_NAME } from "./constants";
+import { __prod__ } from "./constants";
 import express from "express";
 import { ApolloServer } from "apollo-server-express";
-import { buildSchema } from "type-graphql";
-import { FoodEntryResolver } from "./resolvers/foodEntry";
-import { UserResolver } from "./resolvers/user";
-import Redis from "ioredis";
-import session from "express-session";
-import connectRedis from "connect-redis";
-import cors from "cors";
 import { createConnection } from "typeorm";
 import { FoodEntry } from "./entities/FoodEntry";
 import { User } from "./entities/User";
 import { createUserLoader } from "./utils/createUserLoader";
-// import path from "path";
+import { createSchema } from "./utils/createSchema";
 
 const main = async () => {
-  //const conn = 
   await createConnection({
     type: "postgres",
     database: "caloriesapp",
@@ -26,51 +18,17 @@ const main = async () => {
     logging: !__prod__,
     synchronize: true,
     entities: [User, FoodEntry],
-    // migrations: [path.join(__dirname, "./migrations/*")],
   });
-
-  // await conn.runMigrations();
 
   const app = express();
 
-  const RedisStore = connectRedis(session);
-  const redis = new Redis();
-  app.use(
-    cors({
-      origin: process.env.CORS_ORIGIN,
-      credentials: true,
-    })
-  );
-  app.use(
-    session({
-      name: COOKIE_NAME,
-      store: new RedisStore({
-        client: redis,
-        disableTouch: true,
-      }),
-      cookie: {
-        maxAge: 1000 * 60 * 60 * 24 * 365 * 10, // 10 years
-        httpOnly: true,
-        sameSite: "lax", // csrf
-        secure: __prod__, // cookie only works in https
-        // TODO
-        // domain: __prod__ ? ".codeponder.com" : undefined,
-      },
-      saveUninitialized: false,
-      secret: process.env.SESSION_SECRET,
-      resave: false,
-    })
-  );
+  const schema = await createSchema();
 
   const apolloServer = new ApolloServer({
-    schema: await buildSchema({
-      resolvers: [FoodEntryResolver, UserResolver],
-      validate: false,
-    }),
+    schema,
     context: ({ req, res }) => ({
       req,
       res,
-      redis,
       userLoader: createUserLoader(),
     }),
   });

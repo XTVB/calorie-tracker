@@ -1,3 +1,7 @@
+#Setup
+Redis needs to be installed
+2 postgresql databases are setup, 'caloriesapp' and 'caloriesapptest', with a role that can access them called 'postgres' with password 'postgres'
+
 #Admin user credentials:
 username: admin
 password: admin

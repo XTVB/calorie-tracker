@@ -1,3 +1,5 @@
+import BigNumber from "bignumber.js";
+import { isDefined } from "../utils/isDefined";
 import { ObjectType, Field, Float } from "type-graphql";
 import {
   Entity,
@@ -30,8 +32,18 @@ export class FoodEntry extends BaseEntity {
   date!: Date;
 
   @Field(() => Float, { nullable: true })
-  @Column({ nullable: true })
-  price?: number;
+  @Column("decimal", {
+    precision: 10,
+    scale: 2,
+    nullable: true,
+    transformer: {
+      from: (value: string | null): BigNumber | undefined =>
+        isDefined(value) ? new BigNumber(value) : undefined,
+      to: (value: BigNumber | undefined): string | null =>
+        isDefined(value) ? value.toString() : null,
+    },
+  })
+  price?: BigNumber;
 
   @Field()
   @Column()
