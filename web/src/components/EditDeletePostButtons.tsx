@@ -32,6 +32,7 @@ export const EditDeleteEntryButtons: React.FC<EditDeleteEntryButtonsProps> = ({
         as={`/food-entry/edit/${id}/${userId}`}
       >
         <IconButton
+          variant="cta"
           as={Link}
           mr={4}
           icon={<FiEdit />}
@@ -39,6 +40,7 @@ export const EditDeleteEntryButtons: React.FC<EditDeleteEntryButtonsProps> = ({
         />
       </NextLink>
       <IconButton
+        variant="cta"
         icon={<MdDelete />}
         aria-label="Delete Entry"
         onClick={() => {

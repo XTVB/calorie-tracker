@@ -15,19 +15,20 @@ const theme = extendTheme({
   breakpoints,
   components: {
     Button: {
-      baseStyle: {
-        bg: "#316cb5",
-        bgColor: "#316cb5",
-        _hover: {
-          color: "#316cb6"
-        }
-      },
       variants: {
         link: {
           color: "#f9fafc",
-          bgColor: "rgba(0, 0, 0, 0)" 
-        }
-      }
+          bgColor: "rgba(0, 0, 0, 0)",
+        },
+        cta: {
+          bg: "#316cb5",
+          bgColor: "#316cb5",
+          _hover: {
+            bgColor: "#f9fafc",
+            color: "#316cb5",
+          },
+        },
+      },
     },
   },
   styles: {

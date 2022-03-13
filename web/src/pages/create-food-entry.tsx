@@ -5,7 +5,7 @@ import React from "react";
 import { InputField } from "../components/InputField";
 import { Layout } from "../components/Layout";
 import { useCreateFoodEntryMutation } from "../generated/graphql";
-import { useIsAuth } from "../utils/useIsAuth";
+import { useIsAuth } from "../utils/authHooks";
 import { withApollo } from "../utils/withApollo";
 
 const CreatePost: React.FC<{}> = ({}) => {
@@ -17,7 +17,7 @@ const CreatePost: React.FC<{}> = ({}) => {
       <Formik
       // TODO initial values
         initialValues={{
-          date: new Date(),
+          date: new Date().toISOString(),
           name: "",
           calories: 0,
           price: undefined,

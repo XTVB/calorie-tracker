@@ -48,8 +48,15 @@ const Login: React.FC<{}> = ({}) => {
               if (typeof router.query.next === "string") {
                 router.push(router.query.next);
               } else {
-                // worked
-                router.push("/");
+                const user = response.data?.login.user;
+                if (user.isAdmin) {
+                  // TODO admin path
+                } else {
+                  router.push(
+                    "/user/[id]",
+                    `/user/${user.id}`
+                  );
+                }
               }
             }
           }}
@@ -70,6 +77,7 @@ const Login: React.FC<{}> = ({}) => {
                 />
               </Box>
               <Button
+                variant="cta"
                 mt={6}
                 type="submit"
                 isLoading={isSubmitting}

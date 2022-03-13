@@ -7,4 +7,4 @@ export const perUserCaloriesLimit = {
     6: 2100,
     7: 2100,
     8: 2100,
-}
+} as Record<number, number>

@@ -14,7 +14,7 @@ const NavBar: React.FC = () => {
     loading || !data?.me ? null : (
       <Flex align="center">
         <NextLink href="/create-food-entry">
-          <Button as={Link} mr={4}>
+          <Button variant="cta" as={Link} mr={4}>
             add food entry
           </Button>
         </NextLink>

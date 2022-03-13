@@ -1,8 +1,11 @@
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
+export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-const defaultOptions =  {}
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -16,10 +19,9 @@ export type Scalars = {
 
 export type CostLimitExceedResponse = {
   __typename?: 'CostLimitExceedResponse';
-  month: Scalars['String'];
   limitExceeded: Scalars['Boolean'];
+  month: Scalars['String'];
 };
-
 
 export type FetchMultipleUsersEntriesInput = {
   dateFrom: Scalars['DateTime'];
@@ -41,41 +43,41 @@ export type FieldError = {
 
 export type FoodEntry = {
   __typename?: 'FoodEntry';
+  calories: Scalars['Float'];
+  creator: User;
+  creatorId: Scalars['Float'];
+  date: Scalars['DateTime'];
   id: Scalars['Float'];
   name: Scalars['String'];
-  calories: Scalars['Float'];
-  date: Scalars['DateTime'];
   price?: Maybe<Scalars['Float']>;
-  creatorId: Scalars['Float'];
-  creator: User;
 };
 
 export type FoodEntryInput = {
+  calories: Scalars['Float'];
   creatorId: Scalars['Float'];
   date: Scalars['DateTime'];
   name: Scalars['String'];
-  calories: Scalars['Float'];
-  price?: Maybe<Scalars['Float']>;
+  price?: InputMaybe<Scalars['Float']>;
 };
 
 export type FoodEntryResponse = {
   __typename?: 'FoodEntryResponse';
-  errors?: Maybe<Array<FieldError>>;
   entry?: Maybe<FoodEntry>;
+  errors?: Maybe<Array<FieldError>>;
 };
 
 export type MultipleUsersEntriesResponse = {
   __typename?: 'MultipleUsersEntriesResponse';
-  userId: Scalars['Float'];
   groupedEntries: Array<UserEntriesGroup>;
+  userId: Scalars['Float'];
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
   createFoodEntry: FoodEntryResponse;
-  updateFoodEntry?: Maybe<FoodEntryResponse>;
   deleteFoodEntry: Scalars['Boolean'];
   login: UserResponse;
+  updateFoodEntry?: Maybe<FoodEntryResponse>;
 };
 
 
@@ -84,15 +86,9 @@ export type MutationCreateFoodEntryArgs = {
 };
 
 
-export type MutationUpdateFoodEntryArgs = {
-  input: FoodEntryInput;
-  id: Scalars['Float'];
-};
-
-
 export type MutationDeleteFoodEntryArgs = {
-  userId: Scalars['Float'];
   id: Scalars['Float'];
+  userId: Scalars['Float'];
 };
 
 
@@ -101,24 +97,30 @@ export type MutationLoginArgs = {
   username: Scalars['String'];
 };
 
+
+export type MutationUpdateFoodEntryArgs = {
+  id: Scalars['Float'];
+  input: FoodEntryInput;
+};
+
 export type Query = {
   __typename?: 'Query';
   FoodEntry?: Maybe<FoodEntry>;
-  getUserEntries: Array<UserEntriesGroup>;
-  getMultipleUsersEntries: Array<MultipleUsersEntriesResponse>;
   exceededLimit: Array<CostLimitExceedResponse>;
-  me?: Maybe<User>;
   getAllNormalUsers: Array<User>;
+  getMultipleUsersEntries: Array<MultipleUsersEntriesResponse>;
+  getUserEntries: Array<UserEntriesGroup>;
+  me?: Maybe<User>;
 };
 
 
 export type QueryFoodEntryArgs = {
-  userId: Scalars['Float'];
   id: Scalars['Float'];
+  userId: Scalars['Float'];
 };
 
 
-export type QueryGetUserEntriesArgs = {
+export type QueryExceededLimitArgs = {
   input: FetchUserEntriesInput;
 };
 
@@ -128,31 +130,31 @@ export type QueryGetMultipleUsersEntriesArgs = {
 };
 
 
-export type QueryExceededLimitArgs = {
+export type QueryGetUserEntriesArgs = {
   input: FetchUserEntriesInput;
 };
 
 export type User = {
   __typename?: 'User';
-  id: Scalars['Float'];
-  username: Scalars['String'];
-  isAdmin: Scalars['Boolean'];
   createdAt: Scalars['String'];
+  id: Scalars['Float'];
+  isAdmin: Scalars['Boolean'];
   updatedAt: Scalars['String'];
+  username: Scalars['String'];
 };
 
 export type UserEntriesGroup = {
   __typename?: 'UserEntriesGroup';
-  date: Scalars['String'];
-  count: Scalars['Float'];
   caloriesTotal: Scalars['Float'];
+  count: Scalars['Float'];
+  date: Scalars['String'];
   entries: Array<FoodEntry>;
 };
 
 export type UserResponse = {
   __typename?: 'UserResponse';
-  errors?: Maybe<Array<FieldError>>;
   accessToken?: Maybe<Scalars['String']>;
+  errors?: Maybe<Array<FieldError>>;
   user?: Maybe<User>;
 };
 
@@ -161,19 +163,7 @@ export type CreateFoodEntryMutationVariables = Exact<{
 }>;
 
 
-export type CreateFoodEntryMutation = (
-  { __typename?: 'Mutation' }
-  & { createFoodEntry: (
-    { __typename?: 'FoodEntryResponse' }
-    & { errors?: Maybe<Array<(
-      { __typename?: 'FieldError' }
-      & Pick<FieldError, 'field' | 'message'>
-    )>>, entry?: Maybe<(
-      { __typename?: 'FoodEntry' }
-      & Pick<FoodEntry, 'id' | 'name' | 'calories' | 'date' | 'price' | 'creatorId'>
-    )> }
-  ) }
-);
+export type CreateFoodEntryMutation = { __typename?: 'Mutation', createFoodEntry: { __typename?: 'FoodEntryResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, entry?: { __typename?: 'FoodEntry', id: number, name: string, calories: number, date: string, price?: number | null, creatorId: number } | null } };
 
 export type DeleteFoodEntryMutationVariables = Exact<{
   userId: Scalars['Float'];
@@ -181,10 +171,7 @@ export type DeleteFoodEntryMutationVariables = Exact<{
 }>;
 
 
-export type DeleteFoodEntryMutation = (
-  { __typename?: 'Mutation' }
-  & Pick<Mutation, 'deleteFoodEntry'>
-);
+export type DeleteFoodEntryMutation = { __typename?: 'Mutation', deleteFoodEntry: boolean };
 
 export type LoginMutationVariables = Exact<{
   username: Scalars['String'];
@@ -192,20 +179,7 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = (
-  { __typename?: 'Mutation' }
-  & { login: (
-    { __typename?: 'UserResponse' }
-    & Pick<UserResponse, 'accessToken'>
-    & { errors?: Maybe<Array<(
-      { __typename?: 'FieldError' }
-      & Pick<FieldError, 'field' | 'message'>
-    )>>, user?: Maybe<(
-      { __typename?: 'User' }
-      & Pick<User, 'id' | 'username' | 'isAdmin'>
-    )> }
-  ) }
-);
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'UserResponse', accessToken?: string | null, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, user?: { __typename?: 'User', id: number, username: string, isAdmin: boolean } | null } };
 
 export type UpdateFoodEntryMutationVariables = Exact<{
   id: Scalars['Float'];
@@ -213,43 +187,19 @@ export type UpdateFoodEntryMutationVariables = Exact<{
 }>;
 
 
-export type UpdateFoodEntryMutation = (
-  { __typename?: 'Mutation' }
-  & { updateFoodEntry?: Maybe<(
-    { __typename?: 'FoodEntryResponse' }
-    & { errors?: Maybe<Array<(
-      { __typename?: 'FieldError' }
-      & Pick<FieldError, 'field' | 'message'>
-    )>>, entry?: Maybe<(
-      { __typename?: 'FoodEntry' }
-      & Pick<FoodEntry, 'id' | 'name' | 'calories' | 'date' | 'price' | 'creatorId'>
-    )> }
-  )> }
-);
+export type UpdateFoodEntryMutation = { __typename?: 'Mutation', updateFoodEntry?: { __typename?: 'FoodEntryResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, entry?: { __typename?: 'FoodEntry', id: number, name: string, calories: number, date: string, price?: number | null, creatorId: number } | null } | null };
 
 export type AllUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AllUsersQuery = (
-  { __typename?: 'Query' }
-  & { getAllNormalUsers: Array<(
-    { __typename?: 'User' }
-    & Pick<User, 'id'>
-  )> }
-);
+export type AllUsersQuery = { __typename?: 'Query', getAllNormalUsers: Array<{ __typename?: 'User', id: number }> };
 
 export type GetExceededLimitQueryVariables = Exact<{
   input: FetchUserEntriesInput;
 }>;
 
 
-export type GetExceededLimitQuery = (
-  { __typename?: 'Query' }
-  & { exceededLimit: Array<(
-    { __typename?: 'CostLimitExceedResponse' }
-    & Pick<CostLimitExceedResponse, 'month' | 'limitExceeded'>
-  )> }
-);
+export type GetExceededLimitQuery = { __typename?: 'Query', exceededLimit: Array<{ __typename?: 'CostLimitExceedResponse', month: string, limitExceeded: boolean }> };
 
 export type GetFoodEntryQueryVariables = Exact<{
   id: Scalars['Float'];
@@ -257,62 +207,26 @@ export type GetFoodEntryQueryVariables = Exact<{
 }>;
 
 
-export type GetFoodEntryQuery = (
-  { __typename?: 'Query' }
-  & { FoodEntry?: Maybe<(
-    { __typename?: 'FoodEntry' }
-    & Pick<FoodEntry, 'id' | 'name' | 'calories' | 'date' | 'price' | 'creatorId'>
-    & { creator: (
-      { __typename?: 'User' }
-      & Pick<User, 'username'>
-    ) }
-  )> }
-);
+export type GetFoodEntryQuery = { __typename?: 'Query', FoodEntry?: { __typename?: 'FoodEntry', id: number, name: string, calories: number, date: string, price?: number | null, creatorId: number, creator: { __typename?: 'User', username: string } } | null };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = (
-  { __typename?: 'Query' }
-  & { me?: Maybe<(
-    { __typename?: 'User' }
-    & Pick<User, 'id' | 'username' | 'isAdmin'>
-  )> }
-);
+export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: number, username: string, isAdmin: boolean } | null };
 
 export type GetMultipleUsersEntriesQueryVariables = Exact<{
   input: FetchMultipleUsersEntriesInput;
 }>;
 
 
-export type GetMultipleUsersEntriesQuery = (
-  { __typename?: 'Query' }
-  & { getMultipleUsersEntries: Array<(
-    { __typename?: 'MultipleUsersEntriesResponse' }
-    & Pick<MultipleUsersEntriesResponse, 'userId'>
-    & { groupedEntries: Array<(
-      { __typename?: 'UserEntriesGroup' }
-      & Pick<UserEntriesGroup, 'date' | 'count' | 'caloriesTotal'>
-    )> }
-  )> }
-);
+export type GetMultipleUsersEntriesQuery = { __typename?: 'Query', getMultipleUsersEntries: Array<{ __typename?: 'MultipleUsersEntriesResponse', userId: number, groupedEntries: Array<{ __typename?: 'UserEntriesGroup', date: string, count: number, caloriesTotal: number }> }> };
 
 export type GetUserEntriesQueryVariables = Exact<{
   input: FetchUserEntriesInput;
 }>;
 
 
-export type GetUserEntriesQuery = (
-  { __typename?: 'Query' }
-  & { getUserEntries: Array<(
-    { __typename?: 'UserEntriesGroup' }
-    & Pick<UserEntriesGroup, 'date' | 'caloriesTotal'>
-    & { entries: Array<(
-      { __typename?: 'FoodEntry' }
-      & Pick<FoodEntry, 'id' | 'name' | 'calories' | 'date' | 'price' | 'creatorId'>
-    )> }
-  )> }
-);
+export type GetUserEntriesQuery = { __typename?: 'Query', getUserEntries: Array<{ __typename?: 'UserEntriesGroup', date: string, caloriesTotal: number, entries: Array<{ __typename?: 'FoodEntry', id: number, name: string, calories: number, date: string, price?: number | null, creatorId: number }> }> };
 
 
 export const CreateFoodEntryDocument = gql`
