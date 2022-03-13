@@ -18,11 +18,14 @@ const theme = extendTheme({
       baseStyle: {
         bg: "#316cb5",
         bgColor: "#316cb5",
+        _hover: {
+          color: "#316cb6"
+        }
       },
       variants: {
         link: {
           color: "#f9fafc",
-          bgColor: "rgba(0, 0, 0, 0)",
+          bgColor: "rgba(0, 0, 0, 0)" 
         }
       }
     },

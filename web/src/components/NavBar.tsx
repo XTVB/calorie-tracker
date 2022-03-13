@@ -13,9 +13,9 @@ const NavBar: React.FC = () => {
   let body =
     loading || !data?.me ? null : (
       <Flex align="center">
-        <NextLink href="/create-post">
+        <NextLink href="/create-food-entry">
           <Button as={Link} mr={4}>
-            create post
+            add food entry
           </Button>
         </NextLink>
         <Box mr={2}>{data.me.username}</Box>

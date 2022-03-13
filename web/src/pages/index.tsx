@@ -1,4 +1,12 @@
-import { Box, Flex, Heading, Stack, Text } from "@chakra-ui/react";
+import {
+  Flex,
+  Heading,
+  Stack,
+  Text,
+  Tag,
+  TagLabel,
+  Wrap,
+} from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { EditDeleteEntryButtons } from "../components/EditDeletePostButtons";
 import { Layout } from "../components/Layout";
@@ -67,30 +75,71 @@ const Index = () => {
                   shadow="md"
                   p={5}
                 >
-                  <Box flex={1}>
-                    <Heading fontSize="xl">{date}</Heading>
-                    <Text>Exceeded calories limit {`${caloriesTotal > perUserCaloriesLimit[2]}`}</Text>
-                    <Text>Exceeded price limit {`${exceededLimitMap[date.slice(3)]}`}</Text>
-                    {entries.map(
-                      ({ id, date, name, calories, price, creatorId }) => (
-                        <Flex key={id} align="center">
-                          <Text flex={1} mt={4}>
-                            date {date}
-                            name {name}
-                            calories {calories}
-                            price {price}
-                            creatorId {creatorId}
-                          </Text>
-                          <Box ml="auto">
+                  <Stack spacing={5} flex={1}>
+                    <Stack spacing={2} align="center" direction="row">
+                      <Heading fontSize="xl">{date}</Heading>
+                      {/* TODO creatorId */}
+                      {caloriesTotal > perUserCaloriesLimit[2] && (
+                        <Tag
+                          size={"md"}
+                          borderRadius="full"
+                          variant="solid"
+                          colorScheme="red"
+                        >
+                          <TagLabel>Exceeded calories limit</TagLabel>
+                        </Tag>
+                      )}
+                      {exceededLimitMap[date.slice(3)] && (
+                        <Tag
+                          size={"md"}
+                          borderRadius="full"
+                          variant="solid"
+                          colorScheme="red"
+                        >
+                          <TagLabel>Exceeded price limit</TagLabel>
+                        </Tag>
+                      )}
+                    </Stack>
+                    <Wrap spacing={6} flex={1} direction="row">
+                      {entries.map(
+                        ({ id, date, name, calories, price, creatorId }) => (
+                          <Stack
+                            key={id}
+                            minW={150}
+                            maxWidth={200}
+                            bg={"#306cb5"}
+                            justifyContent="center"
+                            alignItems="center"
+                            borderRadius={8}
+                            spacing={2}
+                            py={2}
+                            px={4}
+                          >
+                            <Heading
+                              textAlign={"center"}
+                              size="l"
+                            >{`${name} - ${new Date(
+                              date
+                            ).toLocaleTimeString()}`}</Heading>
+                            <Flex
+                              justify={"center"}
+                              align={"center"}
+                              direction={"column"}
+                            >
+                              <Text>{`${calories} calories`}</Text>
+                              {isDefined(price) && <Text>{`$${price}`}</Text>}
+                            </Flex>
                             <EditDeleteEntryButtons
                               id={id}
-                              creatorId={creatorId}
+                              userId={creatorId}
+                              dateFrom={input.dateFrom}
+                              dateTo={input.dateTo}
                             />
-                          </Box>
-                        </Flex>
-                      )
-                    )}
-                  </Box>
+                          </Stack>
+                        )
+                      )}
+                    </Wrap>
+                  </Stack>
                 </Flex>
               )
             )}
