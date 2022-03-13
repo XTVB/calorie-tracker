@@ -1,0 +1,13 @@
+query GetFoodEntry($id: Float!, $userId: Float!) {
+  FoodEntry(id: $id, userId: $userId) {
+    id
+    name
+    calories
+    date
+    price
+    creatorId
+    creator {
+      username
+    }
+  }
+}

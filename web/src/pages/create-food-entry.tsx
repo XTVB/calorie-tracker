@@ -1,28 +1,33 @@
-import { Box, Button } from "@chakra-ui/core";
+import { Box, Button } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
-import { withUrqlClient } from "next-urql";
 import { useRouter } from "next/router";
 import React from "react";
 import { InputField } from "../components/InputField";
 import { Layout } from "../components/Layout";
-import { useCreatePostMutation } from "../generated/graphql";
-import { createUrqlClient } from "../utils/createUrqlClient";
+import { useCreateFoodEntryMutation } from "../generated/graphql";
 import { useIsAuth } from "../utils/useIsAuth";
 import { withApollo } from "../utils/withApollo";
 
 const CreatePost: React.FC<{}> = ({}) => {
   const router = useRouter();
   useIsAuth();
-  const [createPost] = useCreatePostMutation();
+  const [createEntry] = useCreateFoodEntryMutation();
   return (
     <Layout variant="small">
       <Formik
-        initialValues={{ title: "", text: "" }}
+      // TODO initial values
+        initialValues={{
+          date: new Date(),
+          name: "",
+          calories: 0,
+          price: undefined,
+          creatorId: 2,
+        }}
         onSubmit={async (values) => {
-          const { errors } = await createPost({
+          const { errors } = await createEntry({
             variables: { input: values },
             update: (cache) => {
-              cache.evict({ fieldName: "posts:{}" });
+              cache.evict({ fieldName: "FoodEntry:{}" });
             },
           });
           if (!errors) {
@@ -32,7 +37,7 @@ const CreatePost: React.FC<{}> = ({}) => {
       >
         {({ isSubmitting }) => (
           <Form>
-            <InputField name="title" placeholder="title" label="Title" />
+            {/* <InputField name="title" placeholder="title" label="Title" />
             <Box mt={4}>
               <InputField
                 textarea
@@ -45,10 +50,10 @@ const CreatePost: React.FC<{}> = ({}) => {
               mt={4}
               type="submit"
               isLoading={isSubmitting}
-              variantColor="teal"
+              colorScheme="teal"
             >
               create post
-            </Button>
+            </Button> */}
           </Form>
         )}
       </Formik>

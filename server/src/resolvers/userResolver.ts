@@ -29,7 +29,7 @@ export class UserResolver {
     return User.findOne(parseFloat(payload.userId));
   }
 
-  // Used just to set up users more conveniently, registeration via UI is not implemented
+  // Used just to set up users more conveniently, registration via UI is not implemented
   // @Mutation(() => User)
   // async register(
   //   @Arg("options") options: UsernamePasswordInput

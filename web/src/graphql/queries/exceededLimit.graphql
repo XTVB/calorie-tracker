@@ -1,0 +1,6 @@
+query GetExceededLimit($input: FetchUserEntriesInput!) {
+  exceededLimit(input: $input) {
+    month
+    limitExceeded
+  }
+}

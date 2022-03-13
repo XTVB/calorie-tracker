@@ -8,6 +8,7 @@ import { FoodEntry } from "./entities/FoodEntry";
 import { User } from "./entities/User";
 import { createUserLoader } from "./utils/createUserLoader";
 import { createSchema } from "./utils/createSchema";
+import cors from "cors";
 
 const main = async () => {
   await createConnection({
@@ -23,6 +24,12 @@ const main = async () => {
   const app = express();
 
   const schema = await createSchema();
+  app.use(
+    cors({
+      origin: process.env.CORS_ORIGIN,
+      credentials: true,
+    })
+  );
 
   const apolloServer = new ApolloServer({
     schema,

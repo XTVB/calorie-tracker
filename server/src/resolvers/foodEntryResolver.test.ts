@@ -1134,28 +1134,28 @@ describe("Get user food entries", () => {
       data: {
         getUserEntries: [
           {
-            date: "09/03/2022",
-            count: 2,
-            caloriesTotal: 20,
-            entries: [
-              {
-                ...foodEntry1Props,
-              },
-              {
-                ...foodEntry2Props,
-              },
-            ],
-          },
-          {
             date: "10/03/2022",
             count: 2,
             caloriesTotal: 20,
             entries: [
               {
-                ...foodEntry3Props,
+                ...foodEntry4Props,
               },
               {
-                ...foodEntry4Props,
+                ...foodEntry3Props,
+              },
+            ],
+          },
+          {
+            date: "09/03/2022",
+            count: 2,
+            caloriesTotal: 20,
+            entries: [
+              {
+                ...foodEntry2Props,
+              },
+              {
+                ...foodEntry1Props,
               },
             ],
           },
@@ -1186,28 +1186,28 @@ describe("Get user food entries", () => {
       data: {
         getUserEntries: [
           {
-            date: "09/03/2022",
-            count: 2,
-            caloriesTotal: 20,
-            entries: [
-              {
-                ...foodEntry1Props,
-              },
-              {
-                ...foodEntry2Props,
-              },
-            ],
-          },
-          {
             date: "10/03/2022",
             count: 2,
             caloriesTotal: 20,
             entries: [
               {
-                ...foodEntry3Props,
+                ...foodEntry4Props,
               },
               {
-                ...foodEntry4Props,
+                ...foodEntry3Props,
+              },
+            ],
+          },
+          {
+            date: "09/03/2022",
+            count: 2,
+            caloriesTotal: 20,
+            entries: [
+              {
+                ...foodEntry2Props,
+              },
+              {
+                ...foodEntry1Props,
               },
             ],
           },
@@ -1400,28 +1400,28 @@ describe("Get multiple users food entries", () => {
             userId: normalUser1.id,
             groupedEntries: [
               {
-                date: "09/03/2022",
-                count: 2,
-                caloriesTotal: 20,
-                entries: [
-                  {
-                    ...foodEntry1Props,
-                  },
-                  {
-                    ...foodEntry2Props,
-                  },
-                ],
-              },
-              {
                 date: "10/03/2022",
                 count: 2,
                 caloriesTotal: 20,
                 entries: [
                   {
-                    ...foodEntry3Props,
+                    ...foodEntry4Props,
                   },
                   {
-                    ...foodEntry4Props,
+                    ...foodEntry3Props,
+                  },
+                ],
+              },
+              {
+                date: "09/03/2022",
+                count: 2,
+                caloriesTotal: 20,
+                entries: [
+                  {
+                    ...foodEntry2Props,
+                  },
+                  {
+                    ...foodEntry1Props,
                   },
                 ],
               },
@@ -1436,10 +1436,10 @@ describe("Get multiple users food entries", () => {
                 caloriesTotal: 20,
                 entries: [
                   {
-                    ...foodEntry5Props,
+                    ...foodEntry6Props,
                   },
                   {
-                    ...foodEntry6Props,
+                    ...foodEntry5Props,
                   },
                 ],
               },
@@ -1604,12 +1604,12 @@ describe("Exceeded limit", () => {
       data: {
         exceededLimit: [
           {
-            month: "03/2022",
-            limitExceeded: false,
-          },
-          {
             month: "04/2022",
             limitExceeded: true,
+          },
+          {
+            month: "03/2022",
+            limitExceeded: false,
           },
         ],
       },
@@ -1633,12 +1633,12 @@ describe("Exceeded limit", () => {
       data: {
         exceededLimit: [
           {
-            month: "03/2022",
-            limitExceeded: false,
-          },
-          {
             month: "04/2022",
             limitExceeded: true,
+          },
+          {
+            month: "03/2022",
+            limitExceeded: false,
           },
         ],
       },

@@ -1,27 +1,27 @@
 import React from "react";
 import { Formik, Form } from "formik";
-import { Box, Button, Link, Flex } from "@chakra-ui/core";
-import { Wrapper } from "../components/Wrapper";
+import { Box, Button } from "@chakra-ui/react";
 import { InputField } from "../components/InputField";
 import { useLoginMutation, MeQuery, MeDocument } from "../generated/graphql";
 import { toErrorMap } from "../utils/toErrorMap";
 import { useRouter } from "next/router";
-import { withUrqlClient } from "next-urql";
-import { createUrqlClient } from "../utils/createUrqlClient";
-import NextLink from "next/link";
 import { withApollo } from "../utils/withApollo";
+import { setAccessToken } from "../utils/accessToken";
+import { Layout } from "../components/Layout";
 
 const Login: React.FC<{}> = ({}) => {
   const router = useRouter();
   const [login] = useLoginMutation();
+
   return (
-    <Wrapper variant="small">
+    <Layout variant="small">
       <Formik
-        initialValues={{ usernameOrEmail: "", password: "" }}
+        initialValues={{ username: "", password: "" }}
         onSubmit={async (values, { setErrors }) => {
           const response = await login({
             variables: values,
             update: (cache, { data }) => {
+              setAccessToken(data?.login.accessToken || "");
               cache.writeQuery<MeQuery>({
                 query: MeDocument,
                 data: {
@@ -29,7 +29,7 @@ const Login: React.FC<{}> = ({}) => {
                   me: data?.login.user,
                 },
               });
-              cache.evict({ fieldName: "posts:{}" });
+              cache.evict({ fieldName: "FoodEntry:{}" });
             },
           });
           if (response.data?.login.errors) {
@@ -47,9 +47,9 @@ const Login: React.FC<{}> = ({}) => {
         {({ isSubmitting }) => (
           <Form>
             <InputField
-              name="usernameOrEmail"
-              placeholder="username or email"
-              label="Username or Email"
+              name="username"
+              placeholder="username"
+              label="Username"
             />
             <Box mt={4}>
               <InputField
@@ -59,23 +59,18 @@ const Login: React.FC<{}> = ({}) => {
                 type="password"
               />
             </Box>
-            <Flex mt={2}>
-              <NextLink href="/forgot-password">
-                <Link ml="auto">forgot password?</Link>
-              </NextLink>
-            </Flex>
             <Button
               mt={4}
               type="submit"
               isLoading={isSubmitting}
-              variantColor="teal"
+              colorScheme="teal"
             >
               login
             </Button>
           </Form>
         )}
       </Formik>
-    </Wrapper>
+    </Layout>
   );
 };
 

@@ -1,0 +1,14 @@
+query GetUserEntries($input: FetchUserEntriesInput!) {
+  getUserEntries(input: $input) {
+    date
+    caloriesTotal
+    entries {
+      id
+      name
+      calories
+      date
+      price
+      creatorId
+    }
+  }
+}

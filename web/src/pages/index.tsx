@@ -1,108 +1,104 @@
-import { Box, Button, Flex, Heading, Link, Stack, Text } from "@chakra-ui/core";
-import { withUrqlClient } from "next-urql";
-import NextLink from "next/link";
-import { useState } from "react";
-import { EditDeletePostButtons } from "../components/EditDeletePostButtons";
+import { Box, Flex, Heading, Stack, Text } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import { EditDeleteEntryButtons } from "../components/EditDeletePostButtons";
 import { Layout } from "../components/Layout";
-import { UpdootSection } from "../components/UpdootSection";
-import { usePostsQuery, PostsQuery } from "../generated/graphql";
-import { createUrqlClient } from "../utils/createUrqlClient";
+import {
+  useGetExceededLimitQuery,
+  useGetUserEntriesQuery,
+} from "../generated/graphql";
+import { perUserCaloriesLimit } from "../utils/calorieLimitPerUser";
+import { isDefined } from "../utils/isDefined";
 import { withApollo } from "../utils/withApollo";
 
 const Index = () => {
-  const { data, error, loading, fetchMore, variables } = usePostsQuery({
-    variables: {
-      limit: 15,
-      cursor: null,
-    },
-    notifyOnNetworkStatusChange: true,
-  });
+  // TODO useState for userId, or maybe AuthContext
+  const input = {
+    dateFrom: "2021-03-09T13:28:56.035Z",
+    dateTo: "2022-04-09T13:38:56.035Z",
+    userId: 2,
+  };
+  const { data: exceededLimitData, loading: exceededLimitLoading } =
+    useGetExceededLimitQuery({
+      variables: {
+        input,
+      },
+    });
+  const { data: userEntriesData, loading: userEntriesLoading } =
+    useGetUserEntriesQuery({
+      variables: {
+        input,
+      },
+    });
 
-  if (!loading && !data) {
-    return (
-      <div>
-        <div>you got query failed for some reason</div>
-        <div>{error?.message}</div>
-      </div>
+  const [exceededLimitMap, setExceededLimitMap] = useState<
+    Record<string, boolean>
+  >({});
+
+  useEffect(() => {
+    if (!isDefined(exceededLimitData)) {
+      return;
+    }
+
+    setExceededLimitMap(
+      exceededLimitData.exceededLimit.reduce((result, currentValue) => {
+        result[currentValue.month] = currentValue.limitExceeded;
+        return result;
+      }, {} as Record<string, boolean>)
     );
-  }
+  }, [exceededLimitData]);
 
   return (
     <Layout>
-      {!data && loading ? (
-        <div>loading...</div>
-      ) : (
-        <Stack spacing={8}>
-          {data!.posts.posts.map((p) =>
-            !p ? null : (
-              <Flex key={p.id} p={5} shadow="md" borderWidth="1px">
-                <UpdootSection post={p} />
-                <Box flex={1}>
-                  <NextLink href="/post/[id]" as={`/post/${p.id}`}>
-                    <Link>
-                      <Heading fontSize="xl">{p.title}</Heading>
-                    </Link>
-                  </NextLink>
-                  <Text>posted by {p.creator.username}</Text>
-                  <Flex align="center">
-                    <Text flex={1} mt={4}>
-                      {p.textSnippet}
-                    </Text>
-                    <Box ml="auto">
-                      <EditDeletePostButtons
-                        id={p.id}
-                        creatorId={p.creator.id}
-                      />
-                    </Box>
-                  </Flex>
-                </Box>
-              </Flex>
-            )
-          )}
-        </Stack>
-      )}
-      {data && data.posts.hasMore ? (
-        <Flex>
-          <Button
-            onClick={() => {
-              fetchMore({
-                variables: {
-                  limit: variables?.limit,
-                  cursor:
-                    data.posts.posts[data.posts.posts.length - 1].createdAt,
-                },
-                // updateQuery: (
-                //   previousValue,
-                //   { fetchMoreResult }
-                // ): PostsQuery => {
-                //   if (!fetchMoreResult) {
-                //     return previousValue as PostsQuery;
-                //   }
-
-                //   return {
-                //     __typename: "Query",
-                //     posts: {
-                //       __typename: "PaginatedPosts",
-                //       hasMore: (fetchMoreResult as PostsQuery).posts.hasMore,
-                //       posts: [
-                //         ...(previousValue as PostsQuery).posts.posts,
-                //         ...(fetchMoreResult as PostsQuery).posts.posts,
-                //       ],
-                //     },
-                //   };
-                // },
-              });
-            }}
-            isLoading={loading}
-            m="auto"
-            my={8}
-          >
-            load more
-          </Button>
-        </Flex>
-      ) : null}
+      <Stack spacing={8} py={8}>
+        {exceededLimitLoading || userEntriesLoading ? (
+          <Flex p={5} bg={"#e6a817"}>
+            <div>loading...</div>
+          </Flex>
+        ) : exceededLimitData && userEntriesData ? (
+          <>
+            {userEntriesData!.getUserEntries!.map(
+              ({ date, caloriesTotal, entries }) => (
+                <Flex
+                  key={date}
+                  bg={"#e6a817"}
+                  borderColor={"#e6a817"}
+                  borderWidth="1px"
+                  borderRadius={5}
+                  shadow="md"
+                  p={5}
+                >
+                  <Box flex={1}>
+                    <Heading fontSize="xl">{date}</Heading>
+                    <Text>Exceeded calories limit {`${caloriesTotal > perUserCaloriesLimit[2]}`}</Text>
+                    <Text>Exceeded price limit {`${exceededLimitMap[date.slice(3)]}`}</Text>
+                    {entries.map(
+                      ({ id, date, name, calories, price, creatorId }) => (
+                        <Flex key={id} align="center">
+                          <Text flex={1} mt={4}>
+                            date {date}
+                            name {name}
+                            calories {calories}
+                            price {price}
+                            creatorId {creatorId}
+                          </Text>
+                          <Box ml="auto">
+                            <EditDeleteEntryButtons
+                              id={id}
+                              creatorId={creatorId}
+                            />
+                          </Box>
+                        </Flex>
+                      )
+                    )}
+                  </Box>
+                </Flex>
+              )
+            )}
+          </>
+        ) : null}
+      </Stack>
     </Layout>
   );
 };
 
-export default withApollo({ ssr: true })(Index);
+export default withApollo({ ssr: false })(Index);

@@ -1,0 +1,16 @@
+mutation UpdateFoodEntry($id: Float!, $input: FoodEntryInput!) {
+  updateFoodEntry(id: $id, input: $input) {
+    errors {
+      field
+      message
+    }
+    entry {
+      id
+      name
+      calories
+      date
+      price
+      creatorId
+    }
+  }
+}

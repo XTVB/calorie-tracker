@@ -1,0 +1,10 @@
+query GetMultipleUsersEntries($input: FetchMultipleUsersEntriesInput!) {
+  getMultipleUsersEntries(input: $input) {
+    userId
+    groupedEntries {
+      date
+      count
+      caloriesTotal
+    }
+  }
+}

@@ -146,7 +146,7 @@ export class FoodEntryResolver {
     return !!affected;
   }
 
-  @Query(() => [UserEntriesGroup], { nullable: true })
+  @Query(() => [UserEntriesGroup])
   @UseMiddleware(isAuth)
   async getUserEntries(
     @Arg("input") input: FetchUserEntriesInput,
@@ -166,7 +166,7 @@ export class FoodEntryResolver {
     return findEntriesForUserAndGroupByDay(dateFrom, dateTo, userId);
   }
 
-  @Query(() => [MultipleUsersEntriesResponse], { nullable: true })
+  @Query(() => [MultipleUsersEntriesResponse])
   @UseMiddleware(isAdmin)
   async getMultipleUsersEntries(
     @Arg("input") input: FetchMultipleUsersEntriesInput
@@ -215,12 +215,13 @@ export class FoodEntryResolver {
 
     const result = (await getConnection().query(
       `
-      SELECT to_char(date_trunc('month', f.date), 'MM') AS month,
-        to_char(date_trunc('month', f.date), 'YYYY') AS year,
-        sum(f.price) AS monthly_sum
-      FROM "food_entry" "f" 
-      WHERE ("f"."date" BETWEEN $1 AND $2 AND "f"."creatorId" = $3)
-      GROUP BY date_trunc('month', f.date);
+      SELECT to_char(date_trunc('month', date), 'MM') AS month,
+        to_char(date_trunc('month', date), 'YYYY') AS year,
+        sum(price) AS monthly_sum
+      FROM food_entry
+      WHERE date BETWEEN $1 AND $2 AND "creatorId" = $3
+      GROUP BY date_trunc('month', date)
+      ORDER BY date_trunc('month', date) DESC;
       `,
       [startMonth, lastMonth, userId]
     )) as {
@@ -229,7 +230,7 @@ export class FoodEntryResolver {
       monthly_sum: string;
     }[];
 
-    return result.map(({ year, month, monthly_sum }) => {
+    return result.map(({ month, year, monthly_sum }) => {
       return {
         month: `${month}/${year}`,
         limitExceeded: new BigNumber(monthly_sum).gt(SPENDING_LIMIT),

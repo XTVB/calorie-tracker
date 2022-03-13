@@ -13,7 +13,7 @@ export class UserEntriesGroup {
   @Field()
   caloriesTotal: number;
 
-  @Field(() => [FoodEntry], { nullable: true })
+  @Field(() => [FoodEntry])
   entries: FoodEntry[];
 }
 
@@ -22,7 +22,7 @@ export class MultipleUsersEntriesResponse {
   @Field()
   userId: number;
 
-  @Field(() => [UserEntriesGroup], { nullable: true })
+  @Field(() => [UserEntriesGroup])
   groupedEntries: UserEntriesGroup[];
 }
 

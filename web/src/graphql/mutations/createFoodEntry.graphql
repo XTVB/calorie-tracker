@@ -1,0 +1,16 @@
+mutation CreateFoodEntry($input: FoodEntryInput!) {
+  createFoodEntry(input: $input) {
+    errors {
+      field
+      message
+    }
+    entry {
+      id
+      name
+      calories
+      date
+      price
+      creatorId
+    }
+  }
+}

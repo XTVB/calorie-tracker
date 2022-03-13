@@ -1,5 +1,14 @@
-mutation Login($usernameOrEmail: String!, $password: String!) {
-  login(usernameOrEmail: $usernameOrEmail, password: $password) {
-    ...RegularUserResponse
+mutation Login($username: String!, $password: String!) {
+  login(username: $username, password: $password) {
+    errors {
+      field
+      message
+    }
+    accessToken
+    user {
+      id
+      username
+      isAdmin
+    }
   }
 }

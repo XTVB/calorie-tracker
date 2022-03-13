@@ -15,6 +15,10 @@ export const findEntriesForUserAndGroupByDay = async (
 ): Promise<UserEntriesGroup[]> => {
   const entries = await FoodEntry.find({
     where: { date: Between(dateFrom, dateTo), creatorId: userId },
+    order: {
+      date: "DESC",
+      id: "ASC"
+    }
   });
 
   const groupedEntries = entries.reduce((result, currentValue) => {
