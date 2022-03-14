@@ -23,6 +23,7 @@ import {
   VStack,
   Heading,
   useColorModeValue,
+  FormLabel,
 } from "@chakra-ui/react";
 import React, { useState, createRef } from "react";
 import { daysMap, getMonthDetails, getMonthStr } from "./datePickerFunctions";
@@ -37,11 +38,18 @@ const todayTimestamp =
 export interface IDatePickerProps extends Omit<ChakraInputProps, "onChange"> {
   initialDate?: Date;
   dateFormat?: string;
+  label: string;
   onChange: (date: number) => void;
 }
 
 export const DatePicker = (props: IDatePickerProps) => {
-  const { onChange, initialDate = new Date(), dateFormat = "DD/MM/YYYY", ...rest } = props;
+  const {
+    onChange,
+    label,
+    initialDate = new Date(),
+    dateFormat = "DD/MM/YYYY",
+    ...rest
+  } = props;
   const date = initialDate;
   const [year, setYear] = useState(date.getFullYear());
   const [month, setMonth] = useState(date.getMonth());
@@ -101,10 +109,23 @@ export const DatePicker = (props: IDatePickerProps) => {
   };
   return (
     <Menu {...rest}>
-      <MenuButton w="100%" type="button">
+      <MenuButton type="button">
         <InputGroup>
-          <Input defaultValue={getDateStringFromTimestamp(selectedDay)} color={color} ref={inputRef} {...rest} />
-          <InputRightElement children={<ChevronDownIcon w={5} h={5} />} />
+          <HStack align="center">
+            <FormLabel margin={0}>{label}</FormLabel>
+            <VStack>
+              <Input
+                defaultValue={getDateStringFromTimestamp(selectedDay)}
+                color={color}
+                ref={inputRef}
+                {...rest}
+              />
+              <InputRightElement
+                marginTop={"0!important"}
+                children={<ChevronDownIcon color={color} w={5} h={5} />}
+              />
+            </VStack>
+          </HStack>
         </InputGroup>
       </MenuButton>
       <MenuList>

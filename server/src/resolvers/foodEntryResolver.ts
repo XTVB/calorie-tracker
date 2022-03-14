@@ -57,7 +57,7 @@ export class FoodEntryResolver {
     return FoodEntry.findOne({ where: { id, creatorId: userId } });
   }
 
-  @Mutation(() => FoodEntryResponse)
+  @Mutation(() => FoodEntryResponse!)
   @UseMiddleware(isAuth)
   async createFoodEntry(
     @Arg("input") input: FoodEntryInput,
@@ -87,7 +87,7 @@ export class FoodEntryResolver {
     return { entry };
   }
 
-  @Mutation(() => FoodEntryResponse, { nullable: true })
+  @Mutation(() => FoodEntryResponse!)
   @UseMiddleware(isAuth)
   async updateFoodEntry(
     @Arg("id", () => Float) id: number,

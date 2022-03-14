@@ -1,29 +1,26 @@
 import React from "react";
-import { Box, Link, Flex, Button, Heading } from "@chakra-ui/react";
-import NextLink from "next/link";
+import { Box, Flex, Button, Heading } from "@chakra-ui/react";
 import { useMeQuery } from "../generated/graphql";
 import { useApolloClient } from "@apollo/client";
 import { setAccessToken } from "../utils/accessToken";
 import { withApollo } from "../utils/withApollo";
+import { useRouter } from "next/router";
 
 const NavBar: React.FC = () => {
+  const router = useRouter();
   const apolloClient = useApolloClient();
   const { data, loading } = useMeQuery();
 
   let body =
     loading || !data?.me ? null : (
       <Flex align="center">
-        <NextLink href="/create-food-entry">
-          <Button variant="cta" as={Link} mr={4}>
-            add food entry
-          </Button>
-        </NextLink>
         <Box mr={2}>{data.me.username}</Box>
         <Button
           onClick={async () => {
             setAccessToken("");
             try {
               await apolloClient.resetStore();
+              router.push("/login");
             } catch (_) {
               // err will be handled in errorLink
             }
@@ -36,7 +33,7 @@ const NavBar: React.FC = () => {
     );
 
   return (
-    <Flex zIndex={1} position="sticky" top={0} bg="#232d3c" p={4}>
+    <Flex zIndex={100} position="sticky" top={0} bg="#232d3c" p={4}>
       <Flex flex={1} m="auto" align="center" maxW={1000}>
         <Heading>Calorie Tracker</Heading>
         <Box ml={"auto"}>{body}</Box>

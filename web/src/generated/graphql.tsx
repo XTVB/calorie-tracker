@@ -77,7 +77,7 @@ export type Mutation = {
   createFoodEntry: FoodEntryResponse;
   deleteFoodEntry: Scalars['Boolean'];
   login: UserResponse;
-  updateFoodEntry?: Maybe<FoodEntryResponse>;
+  updateFoodEntry: FoodEntryResponse;
 };
 
 
@@ -187,7 +187,7 @@ export type UpdateFoodEntryMutationVariables = Exact<{
 }>;
 
 
-export type UpdateFoodEntryMutation = { __typename?: 'Mutation', updateFoodEntry?: { __typename?: 'FoodEntryResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, entry?: { __typename?: 'FoodEntry', id: number, name: string, calories: number, date: string, price?: number | null, creatorId: number } | null } | null };
+export type UpdateFoodEntryMutation = { __typename?: 'Mutation', updateFoodEntry: { __typename?: 'FoodEntryResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null, entry?: { __typename?: 'FoodEntry', id: number, name: string, calories: number, date: string, price?: number | null, creatorId: number } | null } };
 
 export type AllUsersQueryVariables = Exact<{ [key: string]: never; }>;
 

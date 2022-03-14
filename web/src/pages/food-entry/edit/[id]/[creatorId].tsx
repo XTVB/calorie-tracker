@@ -1,19 +1,24 @@
-import { Box, Button } from "@chakra-ui/react";
-import { Form, Formik } from "formik";
+import { Box } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import React from "react";
-import { InputField } from "../../../../components/InputField";
+import { FoodEntryForm } from "../../../../components/FoodEntryForm";
 import { Layout } from "../../../../components/Layout";
 import {
   useGetFoodEntryQuery,
   useUpdateFoodEntryMutation,
 } from "../../../../generated/graphql";
+import { toErrorMap } from "../../../../utils/toErrorMap";
 import { withApollo } from "../../../../utils/withApollo";
+import dayjs from "dayjs";
 
 const EditEntry = ({}) => {
   const router = useRouter();
-  const entryId = typeof router.query.id === "string" ? parseInt(router.query.id) : -1;
-  const creatorId = typeof router.query.creatorId === "string" ? parseInt(router.query.creatorId) : -1;
+  const entryId =
+    typeof router.query.id === "string" ? parseInt(router.query.id) : -1;
+  const creatorId =
+    typeof router.query.creatorId === "string"
+      ? parseInt(router.query.creatorId)
+      : -1;
 
   const { data, loading } = useGetFoodEntryQuery({
     skip: entryId === -1 || creatorId === -1,
@@ -41,41 +46,26 @@ const EditEntry = ({}) => {
 
   return (
     <Layout variant="small">
-      <Formik
+      <FoodEntryForm
         initialValues={{
-          date: data.FoodEntry.date,
+          date: dayjs(data.FoodEntry.date).format("YYYY-MM-DDTHH:MM"),
           name: data.FoodEntry.name,
           calories: data.FoodEntry.calories,
-          price: data.FoodEntry.price,
+          price: data.FoodEntry.price || undefined,
           creatorId: data.FoodEntry.creatorId,
         }}
-        onSubmit={async (values) => {
-          await updateEntry({ variables: { id: entryId, input: { ...values } } });
-          router.back();
+        onSubmit={async (values, { setErrors }) => {
+          const { data } = await updateEntry({
+            variables: { id: entryId, input: values },
+          });
+          if (data?.updateFoodEntry.errors) {
+            setErrors(toErrorMap(data?.updateFoodEntry.errors));
+          } else {
+            router.push("/user/[id]", `/user/${creatorId}`);
+          }
         }}
-      >
-        {({ isSubmitting }) => (
-          <Form>
-            {/* <InputField name="title" placeholder="title" label="Title" />
-            <Box mt={4}>
-              <InputField
-                textarea
-                name="text"
-                placeholder="text..."
-                label="Body"
-              />
-            </Box>
-            <Button
-              mt={4}
-              type="submit"
-              isLoading={isSubmitting}
-              colorScheme="teal"
-            >
-              update post
-            </Button> */}
-          </Form>
-        )}
-      </Formik>
+        buttonText={"update entry"}
+      />
     </Layout>
   );
 };

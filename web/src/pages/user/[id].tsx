@@ -6,15 +6,15 @@ import {
   Tag,
   TagLabel,
   Wrap,
+  Button,
+  Link,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { EditDeleteEntryButtons } from "../../components/EditDeletePostButtons";
 import { Layout } from "../../components/Layout";
 import {
   useGetExceededLimitLazyQuery,
-  useGetExceededLimitQuery,
   useGetUserEntriesLazyQuery,
-  useGetUserEntriesQuery,
 } from "../../generated/graphql";
 import { perUserCaloriesLimit } from "../../utils/calorieLimitPerUser";
 import { isDefined } from "../../utils/isDefined";
@@ -22,7 +22,7 @@ import { withApollo } from "../../utils/withApollo";
 import { DatePicker } from "../../components/DatePicker/DatePicker";
 import dayjs, { Dayjs } from "dayjs";
 import { useRouter } from "next/router";
-import { getAccessToken } from "../../utils/accessToken";
+import NextLink from "next/link";
 
 const UserScreen = () => {
   const router = useRouter();
@@ -77,6 +77,7 @@ const UserScreen = () => {
         <Flex gridColumnGap={4} direction="row" justifyContent={"flex-end"}>
           <DatePicker
             initialDate={fromDate.startOf("day").toDate()}
+            label="From date"
             placeholder="From date"
             name="fromDate"
             variant={"filled"}
@@ -84,11 +85,20 @@ const UserScreen = () => {
           />
           <DatePicker
             initialDate={toDate.startOf("day").toDate()}
+            label="To date"
             placeholder="To date"
             name="toDate"
             variant={"filled"}
             onChange={(date: number) => setToDate(dayjs(date).endOf("day"))}
           />
+          <NextLink
+            href="/food-entry/create/[creatorId]"
+            as={`/food-entry/create/${userId}`}
+          >
+            <Button variant="cta" as={Link}>
+              add food entry
+            </Button>
+          </NextLink>
         </Flex>
         {exceededLimitLoading || userEntriesLoading ? (
           <Flex p={5} bg={"#e6a817"}>
