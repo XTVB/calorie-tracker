@@ -106,7 +106,7 @@ const UserScreen = () => {
           </Flex>
         ) : exceededLimitData && userEntriesData ? (
           <>
-            {userEntriesData!.getUserEntries!.map(
+            {userEntriesData.getUserEntries.map(
               ({ date, caloriesTotal, entries }) => (
                 <Flex
                   key={date}

@@ -50,12 +50,9 @@ const Login: React.FC<{}> = ({}) => {
               } else {
                 const user = response.data?.login.user;
                 if (user.isAdmin) {
-                  // TODO admin path
+                  router.push("/admin");
                 } else {
-                  router.push(
-                    "/user/[id]",
-                    `/user/${user.id}`
-                  );
+                  router.push("/user/[id]", `/user/${user.id}`);
                 }
               }
             }

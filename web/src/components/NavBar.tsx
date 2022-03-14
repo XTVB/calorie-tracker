@@ -1,10 +1,11 @@
 import React from "react";
-import { Box, Flex, Button, Heading } from "@chakra-ui/react";
+import { Box, Flex, Button, Heading, Link } from "@chakra-ui/react";
 import { useMeQuery } from "../generated/graphql";
 import { useApolloClient } from "@apollo/client";
 import { setAccessToken } from "../utils/accessToken";
 import { withApollo } from "../utils/withApollo";
 import { useRouter } from "next/router";
+import NextLink from "next/link";
 
 const NavBar: React.FC = () => {
   const router = useRouter();
@@ -35,7 +36,11 @@ const NavBar: React.FC = () => {
   return (
     <Flex zIndex={100} position="sticky" top={0} bg="#232d3c" p={4}>
       <Flex flex={1} m="auto" align="center" maxW={1000}>
-        <Heading>Calorie Tracker</Heading>
+        <NextLink href="/">
+          <Link>
+            <Heading>Calorie Tracker</Heading>
+          </Link>
+        </NextLink>
         <Box ml={"auto"}>{body}</Box>
       </Flex>
     </Flex>

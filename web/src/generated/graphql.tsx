@@ -192,7 +192,7 @@ export type UpdateFoodEntryMutation = { __typename?: 'Mutation', updateFoodEntry
 export type AllUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AllUsersQuery = { __typename?: 'Query', getAllNormalUsers: Array<{ __typename?: 'User', id: number }> };
+export type AllUsersQuery = { __typename?: 'Query', getAllNormalUsers: Array<{ __typename?: 'User', id: number, username: string }> };
 
 export type GetExceededLimitQueryVariables = Exact<{
   input: FetchUserEntriesInput;
@@ -397,6 +397,7 @@ export const AllUsersDocument = gql`
     query AllUsers {
   getAllNormalUsers {
     id
+    username
   }
 }
     `;

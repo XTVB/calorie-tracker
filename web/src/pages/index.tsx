@@ -13,8 +13,7 @@ const Index = () => {
         router.replace("/login?next=" + router.pathname);
       } else {
         if (data.me.isAdmin) {
-          // TODO admin path
-          // router.replace("/login?next=" + router.pathname);
+          router.replace("/admin");
         } else {
           router.replace("/user/[id]", `/user/${data.me.id}`);
         }

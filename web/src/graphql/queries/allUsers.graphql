@@ -1,5 +1,6 @@
 query AllUsers {
   getAllNormalUsers {
     id
+    username
   }
 }

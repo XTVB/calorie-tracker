@@ -181,12 +181,14 @@ export class FoodEntryResolver {
           userId
         );
 
+        return {
+          userId,
+          groupedEntries,
+        }
+
         return groupedEntries.length > 0
           ? [
-              {
-                userId,
-                groupedEntries,
-              },
+              
             ]
           : [];
       })

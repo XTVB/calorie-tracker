@@ -1,5 +1,11 @@
 import { withApollo as createWithApollo } from "next-apollo";
-import { ApolloClient, InMemoryCache, HttpLink, from, ApolloLink } from "@apollo/client";
+import {
+  ApolloClient,
+  InMemoryCache,
+  HttpLink,
+  from,
+  ApolloLink,
+} from "@apollo/client";
 import { onError } from "@apollo/client/link/error";
 import { getAccessToken } from "./accessToken";
 import Router from "next/router";
@@ -13,6 +19,8 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
     graphQLErrors.forEach(({ message, locations, path }) => {
       if (message.includes("not authenticated")) {
         Router.replace("/login");
+      } else if (message.includes("not admin")) {
+        Router.replace("/");
       } else {
         console.log(
           `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
@@ -24,10 +32,12 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 });
 
 const authLink = new ApolloLink((operation, forward) => {
-  operation.setContext(({ headers }: any) => ({ headers: {
-    authorization: `bearer ${getAccessToken()}`,
-    ...headers
-  }}));
+  operation.setContext(({ headers }: any) => ({
+    headers: {
+      authorization: `bearer ${getAccessToken()}`,
+      ...headers,
+    },
+  }));
   return forward(operation);
 });
 

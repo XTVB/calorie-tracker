@@ -1328,7 +1328,16 @@ describe("Get multiple users food entries", () => {
 
     expect(response).toMatchObject({
       data: {
-        getMultipleUsersEntries: [],
+        getMultipleUsersEntries: [
+          {
+            userId: 98,
+            groupedEntries: [],
+          },
+          {
+            userId: 99,
+            groupedEntries: [],
+          },
+        ],
       },
     });
   });
@@ -1348,7 +1357,16 @@ describe("Get multiple users food entries", () => {
 
     expect(response).toMatchObject({
       data: {
-        getMultipleUsersEntries: [],
+        getMultipleUsersEntries: [
+          {
+            userId: normalUser1.id,
+            groupedEntries: [],
+          },
+          {
+            userId: normalUser2.id,
+            groupedEntries: [],
+          },
+        ],
       },
     });
   });
@@ -1368,7 +1386,16 @@ describe("Get multiple users food entries", () => {
 
     expect(response).toMatchObject({
       data: {
-        getMultipleUsersEntries: [],
+        getMultipleUsersEntries: [
+          {
+            userId: normalUser1.id,
+            groupedEntries: [],
+          },
+          {
+            userId: normalUser2.id,
+            groupedEntries: [],
+          },
+        ],
       },
     });
   });
